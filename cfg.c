@@ -17,10 +17,20 @@
 #include "cons.c"
 #endif
 
+#ifdef _WIN32
+#define clear system("cls")
+#endif
+
+#ifdef linux
+#define clear system("clear")
+#endif
+
+
 
 void _start_msg(void);
 void _loop(short *err);
 int _rnd(long seed);
+void _help(int page);
 char **FLM_ls(char *PATH);
 
 /*
@@ -48,10 +58,10 @@ void _loop(short *err)
 
         if(strcmp(inp, "tts") == 0) _rnd(0);
         if(strcmp(inp, "xx") == 0) break;
-        if(strcmp(inp, "clear") == 0) system("cls");
+        if(strcmp(inp, "clear") == 0) clear;
         if(strcmp(inp, "ls") == 0) CNS_ls(".");
-    }
-    
+        if(strcmp(inp, "help") == 0) _help(0);
+    } 
 }
 
 
@@ -61,4 +71,13 @@ int _rnd(time_t seed)
     int rnd = rand();
     printf("%i\n", rnd);
     return rnd;
+}
+
+void _help(int page)
+{
+    printf("tts -> test message (random number)\n");
+    printf("clear -> clears screen\n");
+    printf("help -> this\n");
+    printf("ls -> lists contents of curent folder\n");
+    printf("xx -> exits from wpkg\n");
 }

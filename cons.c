@@ -23,16 +23,18 @@ char *CNS_ls(char *PATH)
   
     if (!dr) {
         printf("Could not open current directory" );
-        return (char) 1;
+        return "err1";
     }
   
     while ((de = readdir(dr)) != NULL) {
         printf("%s ; ", de->d_name);
         strcat(flid, de->d_name);
-        strcat(flid, ';');
+        strcat(flid, ";");
     }
+    
+    printf("\n");
   
-    closedir(dr);  struct dirent *de; 
+    closedir(dr);
 
     return flid;
 }
