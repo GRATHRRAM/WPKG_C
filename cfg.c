@@ -31,7 +31,7 @@ void _start_msg(void);
 void _loop(short *err);
 int _rnd(long seed);
 void _help(int page);
-char **FLM_ls(char *PATH);
+void _get_input(char *val);
 
 /*
     START OF CODE
@@ -54,7 +54,7 @@ void _loop(short *err)
     while (1)
     {
         printf("WPKG-> ");
-        scanf("%255s", inp);
+        _get_input(inp);
 
         if(strcmp(inp, "tts") == 0) _rnd(0);
         if(strcmp(inp, "xx") == 0) break;
@@ -62,6 +62,8 @@ void _loop(short *err)
         if(strcmp(inp, "ls") == 0) CNS_ls(".");
         if(strcmp(inp, "help") == 0) _help(0);
     } 
+
+    free(inp);
 }
 
 
@@ -80,4 +82,32 @@ void _help(int page)
     printf("help -> this\n");
     printf("ls -> lists contents of curent folder\n");
     printf("xx -> exits from wpkg\n");
+}
+
+void _get_input(char *val)
+{
+    size_t buffsize = 255;
+    char *buff = (char*) malloc(buffsize);
+    char inp = getchar();
+
+    for(size_t count = 0;; count++)
+    {
+        buff[count] = inp;
+        inp = getchar();
+
+        if(inp == EOF) break;
+        if(inp == '\n') break;
+
+        if(count > buffsize) {
+            buffsize++;
+            buff = (char*) realloc(buff, buffsize);
+        }
+    }
+        
+    memset(val ,0, strlen(val));
+    val = (char*) realloc(val, buffsize);
+    val = buff;
+
+    printf("%s ; %s\n", buff, val);
+    free(buff);
 }
