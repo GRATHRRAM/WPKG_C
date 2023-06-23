@@ -32,6 +32,7 @@ void _loop(short *err);
 int _rnd(long seed);
 void _help(int page);
 void _get_input(char *val);
+char *getstr();
 
 /*
     START OF CODE
@@ -49,65 +50,61 @@ void _start_msg(void)
 
 void _loop(short *err)
 {
-    char *inp = malloc(255);
-
     while (1)
     {
         printf("WPKG-> ");
-        _get_input(inp);
+        char *inp = getstr();
 
         if(strcmp(inp, "tts") == 0) _rnd(0);
         if(strcmp(inp, "xx") == 0) break;
         if(strcmp(inp, "clear") == 0) clear;
         if(strcmp(inp, "ls") == 0) CNS_ls(".");
         if(strcmp(inp, "help") == 0) _help(0);
-    } 
 
-    free(inp);
+        free(inp);
+    } 
 }
 
 
 int _rnd(time_t seed)
 {
     srand((unsigned) time(&seed));
-    int rnd = rand();
+    int rnd = rand() % 87807571;
     printf("%i\n", rnd);
     return rnd;
 }
 
 void _help(int page)
 {
-    printf("tts -> test message (random number)\n");
-    printf("clear -> clears screen\n");
-    printf("help -> this\n");
-    printf("ls -> lists contents of curent folder\n");
-    printf("xx -> exits from wpkg\n");
+  printf("tts -> test message (random number)\n");
+  printf("clear -> clears screen\n");
+  printf("help -> this\n");
+  printf("ls -> lists contents of curent folder\n");
+  printf("xx -> exits from wpkg\n");
 }
 
-void _get_input(char *val)
-{
-    size_t buffsize = 255;
-    char *buff = (char*) malloc(buffsize);
-    char inp = getchar();
+char *getstr() {
+  size_t cr = 1, i = 0;
+  char *buf = malloc(sizeof(char) * cr);
+  if (!buf)
+    return NULL;
 
-    for(size_t count = 0;; count++)
-    {
-        buff[count] = inp;
-        inp = getchar();
-
-        if(inp == EOF) break;
-        if(inp == '\n') break;
-
-        if(count > buffsize) {
-            buffsize++;
-            buff = (char*) realloc(buff, buffsize);
-        }
+  char ch = getchar(); 
+  while (ch != EOF && ch != '\n') {
+    buf[i] = ch;
+    if (i == cr - 1) { 
+      cr++; 
+      char *new = realloc(buf, sizeof(char) * cr);
+      if (!new) 
+        return buf; 
+      
+      buf = new; 
     }
-        
-    memset(val ,0, strlen(val));
-    val = (char*) realloc(val, buffsize);
-    val = buff;
+    
+    ch = getchar();
+    i++;
+  }
+  buf[i] = '\0';
 
-    printf("%s ; %s\n", buff, val);
-    free(buff);
-}
+  return buf;
+ }
